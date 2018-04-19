@@ -5,7 +5,7 @@ import { ApolloProvider } from "react-apollo";
 import "./index.css";
 import registerServiceWorker from "./registerServiceWorker";
 import { Books, Feedback } from "./Query";
-import { AddFeedback } from "./Mutation";
+import { AddFeedback, AddBook } from "./Mutation";
 
 const client = new ApolloClient({
   uri: "http://localhost:4000/graphql"
@@ -16,6 +16,7 @@ const App = () => (
       <h2>My first Apollo app 🚀</h2>
       <AddFeedback />
       <Feedback />
+      <AddBook />
       <Books />
     </div>
   </ApolloProvider>
