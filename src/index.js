@@ -6,7 +6,7 @@ import { Books, Feedback } from "./Query";
 import { AddFeedback, AddBook } from "./Mutation";
 import { Provider } from "./apolloClient";
 import { DontReadTheFeedback } from "./Subscription";
-
+import "tachyons";
 const App = () => (
   <Provider>
     <div>

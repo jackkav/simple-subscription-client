@@ -1,6 +1,7 @@
 import React from "react";
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
+import { SimpleList } from "./components";
 const FEEDBACK_QUERY = gql`
   {
     feedbacks {
@@ -28,9 +29,11 @@ export const Feedback = () => (
               document: FEEDBACK_SUBSCRIPTION,
               updateQuery: (prev, { subscriptionData }) => {
                 if (!subscriptionData.data) return prev;
-                const newFeedItem = subscriptionData.data.feedbackAdded;
                 return Object.assign({}, prev, {
-                  feedbacks: [newFeedItem, ...prev.feedbacks]
+                  feedbacks: [
+                    subscriptionData.data.feedbackAdded,
+                    ...prev.feedbacks
+                  ]
                 });
               }
             })
@@ -48,11 +51,7 @@ export class FeedbackList extends React.Component {
     const { data, loading, error } = this.props;
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error :( {error.message}</p>;
-    return data.feedbacks.map(({ id, text }) => (
-      <div key={id}>
-        <p>{`${id}: ${text}`}</p>
-      </div>
-    ));
+    return <SimpleList list={data.feedbacks} />;
   }
 }
 export const Books = () => (
