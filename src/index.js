@@ -10,10 +10,9 @@ import "tachyons";
 const App = () => (
   <Provider>
     <div>
-      <h2>My first Apollo app 🚀</h2>
       <AddFeedback />
       <Feedback />
-      <DontReadTheFeedback />
+      {/* <DontReadTheFeedback /> */}
       <AddBook />
       <Books />
     </div>

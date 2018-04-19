@@ -6,7 +6,7 @@ const FEEDBACK_QUERY = gql`
   {
     feedbacks {
       id
-      text
+      feedback
     }
   }
 `;
@@ -14,7 +14,7 @@ const FEEDBACK_SUBSCRIPTION = gql`
   subscription onFeedbackAdded {
     feedbackAdded {
       id
-      text
+      feedback
     }
   }
 `;
@@ -24,7 +24,7 @@ export const Feedback = () => (
       return (
         <FeedbackList
           {...result}
-          subscribeToNewComments={() =>
+          subscribeToNew={() =>
             subscribeToMore({
               document: FEEDBACK_SUBSCRIPTION,
               updateQuery: (prev, { subscriptionData }) => {
@@ -43,37 +43,65 @@ export const Feedback = () => (
     }}
   </Query>
 );
-export class FeedbackList extends React.Component {
+class FeedbackList extends React.Component {
   componentDidMount() {
-    this.props.subscribeToNewComments();
+    this.props.subscribeToNew();
   }
   render() {
     const { data, loading, error } = this.props;
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error :( {error.message}</p>;
-    return <SimpleList list={data.feedbacks} />;
+    return <SimpleList list={data.feedbacks} fields={["feedback"]} />;
   }
 }
+const BOOK_QUERY = gql`
+  {
+    books {
+      id
+      title
+      author
+    }
+  }
+`;
+const BOOK_SUBSCRIPTION = gql`
+  subscription onBookAdded {
+    bookAdded {
+      id
+      author
+      title
+    }
+  }
+`;
 export const Books = () => (
-  <Query
-    query={gql`
-      {
-        books {
-          title
-          author
-        }
-      }
-    `}
-  >
-    {({ loading, error, data }) => {
-      if (loading) return <p>Loading...</p>;
-      if (error) return <p>Error :( {error.message}</p>;
-
-      return data.books.map(({ title, author }) => (
-        <div key={title}>
-          <p>{`${title}: ${author}`}</p>
-        </div>
-      ));
+  <Query query={BOOK_QUERY}>
+    {({ subscribeToMore, ...result }) => {
+      return (
+        <BookList
+          {...result}
+          subscribeToNew={() =>
+            subscribeToMore({
+              document: BOOK_SUBSCRIPTION,
+              updateQuery: (prev, { subscriptionData }) => {
+                if (!subscriptionData.data) return prev;
+                return Object.assign({}, prev, {
+                  books: [subscriptionData.data.bookAdded, ...prev.books]
+                });
+              }
+            })
+          }
+        />
+      );
     }}
   </Query>
 );
+class BookList extends React.Component {
+  componentDidMount() {
+    this.props.subscribeToNew();
+  }
+  render() {
+    const { data, loading, error } = this.props;
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error :( {error.message}</p>;
+    return <SimpleList list={data.books} fields={["author", "title"]} />;
+  }
+}

@@ -1,57 +1,59 @@
 import React from "react";
 
-export const SimpleList = ({ list }) => (
+export const SimpleList = ({ list, fields }) => (
   <div className="pa3 pa5-ns">
-    <ul className="list pl0 measure center">
+    <ul className="list pl0 measure ">
       {list.map(x => (
         <li
           key={x.id}
           className="lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--black-30"
         >
-          {x.text}
+          {fields.map(y => x[y]).join`, `}
         </li>
       ))}
     </ul>
   </div>
 );
 
-export const SimpleInput = ({ addFeedback }) => {
-  let input;
+export const SimpleInput = ({ submit, fields }) => {
+  let input = [];
   return (
     <div className="pa4-l">
       <form
+        className="pa4 black-80"
         onSubmit={e => {
           e.preventDefault();
-          addFeedback({ variables: { data: { text: input.value } } });
-          input.value = "";
+          let data = {};
+          fields.forEach(x => (data[x] = input[x].value));
+          submit({ variables: { data } });
+          fields.forEach(x => (input[x].value = ""));
         }}
-        className="bg-light-green mw7 center pa4 br2-ns ba b--black-10"
       >
-        <fieldset className="cf bn ma0 pa0">
-          <legend className="pa0 f5 f4-ns mb3 black-80">
-            Leave some feedback
-          </legend>
-          <div className="cf">
-            <label className="clip" htmlFor="feedback">
-              Feedback
-            </label>
-            <input
-              className="f6 f5-l input-reset bn fl black-80 bg-white pa3 lh-solid w-100 w-75-m w-80-l br2-ns br--left-ns"
-              placeholder="Your Feedback"
-              type="text"
-              name="feedback"
-              id="feedback"
-              ref={node => {
-                input = node;
-              }}
-            />
-            <input
-              className="f6 f5-l button-reset fl pv3 tc bn bg-animate bg-black-70 hover-bg-black white pointer w-100 w-25-m w-20-l br2-ns br--right-ns"
-              type="submit"
-              value="Submit"
-            />
-          </div>
+        <fieldset className="ba b--transparent ph0 mh0">
+          {fields.map(x => (
+            <div key={x} className="mt3">
+              <label className="db fw4 lh-copy f6" htmlFor={x}>
+                {x}
+              </label>
+              <input
+                className="pa2 input-reset ba bg-transparent w-100 measure"
+                type="text"
+                name={x}
+                id={x}
+                ref={node => {
+                  input[x] = node;
+                }}
+              />
+            </div>
+          ))}
         </fieldset>
+        <div className="mt3">
+          <input
+            className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6"
+            type="submit"
+            value="Submit"
+          />
+        </div>
       </form>
     </div>
   );

@@ -6,7 +6,7 @@ const FEEDBACK_SUBSCRIPTION = gql`
   subscription onFeedbackAdded {
     feedbackAdded {
       id
-      text
+      feedback
     }
   }
 `;
@@ -16,8 +16,7 @@ export const DontReadTheFeedback = () => (
     {({ data, loading }) => (
       <h4>
         New feedback:
-        {console.log(data) ||
-          (!loading && data.feedbackAdded && data.feedbackAdded.text)}
+        {!loading && data.feedbackAdded && data.feedbackAdded.feedback}
       </h4>
     )}
   </Subscription>

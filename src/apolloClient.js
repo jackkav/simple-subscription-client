@@ -28,6 +28,6 @@ export const client = new ApolloClient({
   link,
   cache: new InMemoryCache()
 });
-export const Provider = ({children}) => (
+export const Provider = ({ children }) => (
   <ApolloProvider client={client}>{children}</ApolloProvider>
 );
