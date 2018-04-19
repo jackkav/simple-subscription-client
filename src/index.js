@@ -1,25 +1,23 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import ApolloClient from "apollo-boost";
-import { ApolloProvider } from "react-apollo";
 import "./index.css";
 import registerServiceWorker from "./registerServiceWorker";
 import { Books, Feedback } from "./Query";
 import { AddFeedback, AddBook } from "./Mutation";
+import { Provider } from "./apolloClient";
+import { DontReadTheFeedback } from "./Subscription";
 
-const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql"
-});
 const App = () => (
-  <ApolloProvider client={client}>
+  <Provider>
     <div>
       <h2>My first Apollo app 🚀</h2>
       <AddFeedback />
       <Feedback />
+      <DontReadTheFeedback />
       <AddBook />
       <Books />
     </div>
-  </ApolloProvider>
+  </Provider>
 );
 ReactDOM.render(<App />, document.getElementById("root"));
 registerServiceWorker();
